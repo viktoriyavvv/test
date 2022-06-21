@@ -1,7 +1,7 @@
 <template>
-  <div class="static p-2">
+  <div class="container static p-2">
     <input
-      class="absolute bottom-5 z-10 opacity-0"
+      class="fixed bottom-5 z-10 opacity-0"
       ref="imgInput"
       type="file"
       accept="image/*"
@@ -12,13 +12,13 @@
       <img
         src="/src/assets/DownloadPhoto.png"
         alt="Download"
-        class="w-10 absolute bottom-3 left-40"
+        class="w-10 fixed bottom-3 left-40"
       />
     </span>
     <div>
-      <ul class="grid grid-cols-3 gap-2" v-show="isUpload">
+      <ul class="columns-3 gap-2" v-show="isUpload">
         <li v-for="(list, index) in img" :key="list">
-          <img class="rounded-lg" ref="imgimg" :src="list.url" alt="" />
+          <img class="rounded-lg mt-2" ref="imgimg" :src="list.url" alt="" />
           <!-- <button class="remove" @click="remove(index)">Удалить</button> -->
         </li>
       </ul>
