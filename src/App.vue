@@ -1,27 +1,59 @@
-<script setup>
-import { ref } from 'vue'
-
-let counter = ref(0)
-
-setInterval(() => {
-  counter.value++
-}, 1000)
-</script>
-
 <template>
-  <div>
-    <header class="bg-white shadow" v-if="$route.meta.title">
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <h1
-          @click="counter = 0"
-          class="text-3xl font-bold leading-tight text-gray-900"
-        >
-          {{ $route.meta.title }} / {{ counter }}
-        </h1>
-      </div>
-    </header>
-    <main>
-      <router-view />
-    </main>
+  <div class="static p-2">
+    <input
+      class="absolute bottom-5 z-10 opacity-0"
+      ref="imgInput"
+      type="file"
+      accept="image/*"
+      @change="uploadImg($event)"
+      multiple
+    />
+    <span>
+      <img
+        src="/src/assets/DownloadPhoto.png"
+        alt="Download"
+        class="w-10 absolute bottom-3 left-40"
+      />
+    </span>
+    <div>
+      <ul class="grid grid-cols-3 gap-2" v-show="isUpload">
+        <li v-for="(list, index) in img" :key="list">
+          <img class="rounded-lg" ref="imgimg" :src="list.url" alt="" />
+          <!-- <button class="remove" @click="remove(index)">Удалить</button> -->
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
+<script>
+export default {
+  name: "Images",
+  data() {
+    return {
+      isUpload: false,
+      img: [],
+    };
+  },
+  methods: {
+    uploadImg(e) {
+      // console.log(e.target.files);
+      this.isUpload = true;
+      let file = e.target.files[0];
+      let url = "";
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      let name = this;
+      reader.onload = function (e) {
+        url = this.result.substring(this.result.indexOf(",") + 1);
+        name.img.push({
+          id: name.img.length + 1,
+          url: "data:image/png;base64," + url,
+        });
+      };
+    },
+    // remove(index) {
+    //   this.imgUrl.splice(index, 1);
+    // },
+  },
+};
+</script>
