@@ -39,7 +39,7 @@ export default {
       this.isUpload = true;
       let file = e.target.files[0];
       let url = "";
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.readAsDataURL(file);
       let name = this;
       reader.onload = function (e) {
