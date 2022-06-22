@@ -2,11 +2,12 @@
   <div class="container static p-2">
     <input
       class="fixed bottom-5 z-10 opacity-0"
-      ref="imgInput"
       type="file"
-      multiple
+      id="files"
+      ref="files"
       accept="image/*"
-      @change="uploadImg($event)"
+      multiple
+      v-on:change="uploadImg()"
     />
     <span>
       <img
@@ -17,9 +18,9 @@
     </span>
 
     <div>
-      <div class="columns-3 gap-2" v-show="isUpload">
-        <div v-for="(list, index) in img" :key="list">
-          <img class="rounded-lg mb-2" ref="imgimg" :src="list.url" alt="" />
+      <div class="columns-3 gap-2">
+        <div v-for="(file, key) in files">
+          <img class="rounded-lg mb-2" v-bind:ref="'image' + parseInt(key)" />
         </div>
       </div>
     </div>
@@ -27,28 +28,33 @@
 </template>
 <script>
 export default {
-  name: "Images",
   data() {
     return {
-      isUpload: false,
-      img: [],
+      files: [],
     };
   },
   methods: {
-    uploadImg(e) {
-      this.isUpload = true;
-      let file = e.target.files[0];
-      let url = "";
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-      let name = this;
-      reader.onload = function (e) {
-        url = this.result.substring(this.result.indexOf(",") + 1);
-        name.img.push({
-          id: name.img.length + 1,
-          url: "data:image/png;base64," + url,
-        });
-      };
+    uploadImg() {
+      let uploadedFiles = this.$refs.files.files;
+      for (var i = 0; i < uploadedFiles.length; i++) {
+        this.files.push(uploadedFiles[i]);
+      }
+      this.getImagePreviews();
+    },
+    getImagePreviews() {
+      for (let i = 0; i < this.files.length; i++) {
+        if (/\.(jpe?g|png|gif)$/i.test(this.files[i].name)) {
+          let reader = new FileReader();
+          reader.addEventListener(
+            "load",
+            function () {
+              this.$refs["image" + parseInt(i)][0].src = reader.result;
+            }.bind(this),
+            false
+          );
+          reader.readAsDataURL(this.files[i]);
+        }
+      }
     },
   },
 };
