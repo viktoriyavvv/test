@@ -4,9 +4,9 @@
       class="fixed bottom-5 z-10 opacity-0"
       ref="imgInput"
       type="file"
+      multiple
       accept="image/*"
       @change="uploadImg($event)"
-      multiple
     />
     <span>
       <img
@@ -15,13 +15,13 @@
         class="w-10 fixed bottom-3 left-40"
       />
     </span>
+
     <div>
-      <ul class="columns-3 gap-2" v-show="isUpload">
-        <li v-for="(list, index) in img" :key="list">
-          <img class="rounded-lg mt-2" ref="imgimg" :src="list.url" alt="" />
-          <!-- <button class="remove" @click="remove(index)">Удалить</button> -->
-        </li>
-      </ul>
+      <div class="columns-3 gap-2" v-show="isUpload">
+        <div v-for="(list, index) in img" :key="list">
+          <img class="rounded-lg mb-2" ref="imgimg" :src="list.url" alt="" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     uploadImg(e) {
-      // console.log(e.target.files);
       this.isUpload = true;
       let file = e.target.files[0];
       let url = "";
@@ -51,9 +50,6 @@ export default {
         });
       };
     },
-    // remove(index) {
-    //   this.imgUrl.splice(index, 1);
-    // },
   },
 };
 </script>
