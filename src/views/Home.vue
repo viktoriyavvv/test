@@ -1,29 +1,64 @@
-<script setup>
-import ButtonRepo from '@/components/ButtonRepo.vue'
-</script>
-
 <template>
-  <div class="bg-gray-50">
-    <div
-      class="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 lg:flex lg:items-center lg:justify-between lg:py-16 lg:px-8"
-    >
-      <h2
-        class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10"
-      >
-        Ready to dive in?
-        <br />
-        <span class="text-indigo-600">Vite + Vue 3 + Tailwind CSS</span>
-      </h2>
-      <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
-        <div class="inline-flex rounded-md shadow">
-          <router-link
-            to="/about"
-            class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
-            >Next Page</router-link
-          >
+  <div class="container relative mx-auto p-2">
+    <div class="flex justify-center">
+      <input
+        class="fixed bottom-5 z-10 opacity-0"
+        type="file"
+        id="files"
+        ref="files"
+        accept="image/*"
+        multiple
+        v-on:change="uploadImg()"
+      />
+      <span>
+        <img
+          src="/src/assets/DownloadPhoto.png"
+          alt="Download"
+          class="w-10 fixed bottom-3 bg-slate-200 rounded-lg"
+        />
+      </span>
+    </div>
+
+    <div>
+      <div class="columns-3 gap-2">
+        <div v-for="(file, key) in files">
+          <img class="rounded-lg mb-2" v-bind:ref="'image' + parseInt(key)" />
         </div>
-        <ButtonRepo />
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      files: [],
+    };
+  },
+  methods: {
+    uploadImg() {
+      let uploadedFiles = this.$refs.files.files;
+      for (var i = 0; i < uploadedFiles.length; i++) {
+        this.files.push(uploadedFiles[i]);
+      }
+      this.getImagePreviews();
+    },
+    getImagePreviews() {
+      for (let i = 0; i < this.files.length; i++) {
+        if (/\.(jpe?g|png|gif)$/i.test(this.files[i].name)) {
+          let reader = new FileReader();
+          reader.addEventListener(
+            "load",
+            function () {
+              this.$refs["image" + parseInt(i)][0].src = reader.result;
+            }.bind(this),
+            false
+          );
+          reader.readAsDataURL(this.files[i]);
+        }
+      }
+    },
+  },
+};
+</script>
